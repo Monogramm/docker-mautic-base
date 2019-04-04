@@ -54,17 +54,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
-ENV MAUTIC_VERSION=2.15.0 \
-    MAUTIC_SHA1=b07bd42bb092cc96785d2541b33700b55f74ece7 \
+ENV MAUTIC_VERSION=2.15.1 \
+    MAUTIC_SHA1=5ba572fc2d1672c467c815f19b015d4965b5799f \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
     MAUTIC_DB_NAME=mautic
-
-# Setting PHP properties
-ENV PHP_INI_DATE_TIMEZONE='UTC' \
-	PHP_MEMORY_LIMIT=512M \
-	PHP_MAX_UPLOAD=128M \
-	PHP_MAX_EXECUTION_TIME=300
 
 # Download package and extract to web volume
 RUN set -ex; \
@@ -79,6 +73,7 @@ RUN set -ex; \
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY makeconfig.php makedb.php /
 COPY mautic.crontab /etc/cron.d/mautic
+COPY mautic-php.ini /usr/local/etc/php/conf.d/mautic-php.ini
 
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite

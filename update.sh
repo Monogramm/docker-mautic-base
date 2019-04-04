@@ -36,6 +36,7 @@ curl -s https://s3.amazonaws.com/mautic/releases/$current.zip -o mautic.zip
 sha1="$(sha1sum mautic.zip | sed -r 's/ .*//')"
 
 echo "update docker images"
+travisEnv=
 for variant in "${variants[@]}"; do
 	dir="$variant"
 	echo "generating $current-$variant"
@@ -53,7 +54,13 @@ for variant in "${variants[@]}"; do
 
 	# To make management easier, we use these files for all variants
 	cp common/* "$dir"/
+
+	travisEnv='\n    - VARIANT='"$variant$travisEnv"
 done
+
+echo "update .travis.yml"
+travis="$(awk -v 'RS=\n\n' '$1 == "env:" && $2 == "#" && $3 == "Environments" { $0 = "env: # Environments'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
+echo "$travis" > .travis.yml
 
 echo "remove mautic.zip"
 rm mautic.zip
