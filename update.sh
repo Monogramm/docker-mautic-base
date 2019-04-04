@@ -35,6 +35,13 @@ echo "get current SHA signature"
 curl -o mautic.zip -SL https://github.com/mautic/mautic/releases/download/$current/$current.zip
 sha1="$(sha1sum mautic.zip | sed -r 's/ .*//')"
 
+echo "get $current src SHA signature"
+curl -o mautic-src.zip -SL https://github.com/mautic/mautic/archive/$current.zip
+srcsha1="$(sha1sum mautic-src.zip | sed -r 's/ .*//')"
+
+echo "remove mautic-src.zip"
+rm mautic-src.zip
+
 echo "update docker images"
 travisEnv=
 for variant in "${variants[@]}"; do
@@ -49,6 +56,7 @@ for variant in "${variants[@]}"; do
 		s/%%VARIANT_EXTRAS%%/'"${extras[$variant]}"'/;
 		s/%%VERSION%%/'"$current"'/;
 		s/%%VERSION_SHA1%%/'"$sha1"'/;
+		s/%%VERSION_SRC_SHA1%%/'"$srcsha1"'/;
 		s/%%CMD%%/'"${cmd[$variant]}"'/;
 	' "$dir/Dockerfile"
 

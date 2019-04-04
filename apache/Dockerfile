@@ -47,18 +47,26 @@ RUN set -ex; \
         bcmath \
     ;
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
-
 # Define Mautic volume to persist data
 VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
 ENV MAUTIC_VERSION=2.15.1 \
-    MAUTIC_SHA1=5ba572fc2d1672c467c815f19b015d4965b5799f \
+    MAUTIC_SHA1=1fbf6f99a64d6da71a8c09a43576093b077913e2 \
+    MAUTIC_SRC_SHA1=eb611b51a2e8161bb315c710970fbf79e1d19aeb \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
     MAUTIC_DB_NAME=mautic
+
+# Install composer and download sources
+RUN set -ex; \
+	curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer; \
+	curl -o mautic-src.zip -SL https://github.com/mautic/mautic/archive/${MAUTIC_VERSION}.zip; \
+	echo "$MAUTIC_SRC_SHA1 *mautic-src.zip" | sha1sum -c -; \
+	mkdir -p /usr/src/mautic-src; \
+	unzip mautic-src.zip -d /usr/src/mautic-src; \
+	rm mautic-src.zip; \
+	chown -R www-data:www-data /usr/src/mautic-src;
 
 # Download package and extract to web volume
 RUN set -ex; \

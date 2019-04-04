@@ -106,8 +106,9 @@ On first run Mautic is unpacked at `/var/www/html`. You need to attach a volume 
 
 Mautic Docker has two ENV that you can specify an version do start your new container:
 
- - `-e MAUTIC_VERSION` (Defaults to "2.15.0")
- - `-e MAUTIC_SHA1` (Defalts to "b07bd42bb092cc96785d2541b33700b55f74ece7")
+ - `-e MAUTIC_VERSION` (Defaults to "2.15.1")
+ - `-e MAUTIC_SHA1` (Defaults to "1fbf6f99a64d6da71a8c09a43576093b077913e2")
+ - `-e MAUTIC_SRC_SHA1` (Defaults to "eb611b51a2e8161bb315c710970fbf79e1d19aeb")
 
 ## Accesing the Instance
 
