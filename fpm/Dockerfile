@@ -81,7 +81,6 @@ RUN set -ex; \
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY makeconfig.php makedb.php /
 COPY mautic.crontab /etc/cron.d/mautic
-COPY mautic-php.ini /usr/local/etc/php/conf.d/mautic-php.ini
 
 
 # Apply necessary permissions
