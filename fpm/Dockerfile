@@ -50,13 +50,17 @@ RUN set -ex; \
 # Define Mautic volume to persist data
 VOLUME /var/www/html
 
-# Define Mautic version and expected SHA1 signature
+# Define Mautic version and expected SHA1 signature, and set PHP properties
 ENV MAUTIC_VERSION=2.15.1 \
     MAUTIC_SHA1=1fbf6f99a64d6da71a8c09a43576093b077913e2 \
     MAUTIC_SRC_SHA1=eb611b51a2e8161bb315c710970fbf79e1d19aeb \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
-    MAUTIC_DB_NAME=mautic
+    MAUTIC_DB_NAME=mautic \
+    PHP_INI_DATE_TIMEZONE='UTC' \
+	PHP_MEMORY_LIMIT=512M \
+	PHP_MAX_UPLOAD=128M \
+	PHP_MAX_EXECUTION_TIME=300
 
 # Install composer and download sources
 RUN set -ex; \
