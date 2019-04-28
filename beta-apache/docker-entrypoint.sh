@@ -102,6 +102,26 @@ if ! [ -e index.php -a -e app/AppKernel.php ]; then
         echo >&2 "Complete! Mautic has been successfully copied to $(pwd)"
 fi
 
+#INSTALL PLUGINS DYNAMICALLY
+if [ -n "$MAUTIC_PLUGINS" ]; then
+        echo "Mautic plugins required: $MAUTIC_PLUGINS"
+
+        for plugin in $MAUTIC_PLUGINS ; do
+                echo "Adding requirements for $plugin..."
+                composer require $plugin \
+                        --prefer-dist --prefer-stable --no-update \
+                        --no-interaction --optimize-autoloader;
+        done
+
+        echo "Installing Mautic requirements..."
+        composer install \
+                --prefer-dist --no-dev \
+                --no-interaction --optimize-autoloader;
+
+        echo "Updating Mautic plugins and vendors permissions..."
+        chown www-data:www-data plugins/* vendor/*
+fi
+
 # Ensure the MySQL Database is created
 php /makedb.php "$MAUTIC_DB_HOST" "$MAUTIC_DB_USER" "$MAUTIC_DB_PASSWORD" "$MAUTIC_DB_NAME"
 

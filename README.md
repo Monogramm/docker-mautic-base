@@ -88,6 +88,9 @@ If the `MAUTIC_DB_NAME` specified does not already exist on the given MySQL serv
 -	`-e MAUTIC_CRON_SUGARCRM=...` (defaults to empty) Enables mautic crons for SugarCRM integration
 -	`-e MAUTIC_CRON_DYNAMICS=...` (defaults to empty) Enables mautic crons for Dynamics CRM integration
 
+### Mautic Plugins
+-	`-e MAUTIC_PLUGINS=...` (defaults to empty) List of plugins to install on startup
+
 ### Enable / Disable Features
 -	`-e MAUTIC_TESTER=...` (defaults to empty) Enables Mautic Github Pull Tester  [documentation](https://github.com/mautic/mautic-tester)
 
