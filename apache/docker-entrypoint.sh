@@ -104,7 +104,7 @@ fi
 
 #INSTALL PLUGINS DYNAMICALLY
 if [ -n "$MAUTIC_PLUGINS" ]; then
-        echo "Mautic plugins required: $MAUTIC_PLUGINS"
+        echo >&2 "Mautic plugins required: $MAUTIC_PLUGINS"
 
         for plugin in $MAUTIC_PLUGINS ; do
                 echo "Adding requirements for $plugin..."
@@ -113,12 +113,17 @@ if [ -n "$MAUTIC_PLUGINS" ]; then
                         --no-interaction --optimize-autoloader;
         done
 
-        echo "Installing Mautic requirements..."
+        echo >&2 "Update Mautic requirements..."
+        composer update \
+                --prefer-dist --no-dev \
+                --no-interaction --optimize-autoloader;
+
+        echo >&2 "Installing Mautic requirements..."
         composer install \
                 --prefer-dist --no-dev \
                 --no-interaction --optimize-autoloader;
 
-        echo "Updating Mautic plugins and vendors permissions..."
+        echo >&2 "Updating Mautic plugins and vendors permissions..."
         chown www-data:www-data plugins/* vendor/*
 fi
 
