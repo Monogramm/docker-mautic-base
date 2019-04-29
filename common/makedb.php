@@ -1,7 +1,7 @@
 <?php
 // Args: 0 => makedb.php, 1 => "$MAUTIC_DB_HOST", 2 => "$MAUTIC_DB_USER", 3 => "$MAUTIC_DB_PASSWORD", 4 => "$MAUTIC_DB_NAME"
 $stderr = fopen('php://stderr', 'w');
-fwrite($stderr, "\nEnsuring Mautic database is present\n");
+fwrite($stderr, "\nEnsuring Mautic database is present at ".$argv[1]."\n");
 
 if (strpos($argv[1], ':') !== false)
 {
