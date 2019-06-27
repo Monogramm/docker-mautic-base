@@ -143,7 +143,7 @@ if [ -n "$MAUTIC_PLUGINS" ]; then
         done
 
         echo >&2 "Clear Mautic cache again..."
-        php app/console app:clear
+        php app/console cache:clear
 fi
 
 # Ensure the MySQL Database is created
