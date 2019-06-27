@@ -102,11 +102,11 @@ if ! [ -e index.php -a -e app/AppKernel.php ]; then
         echo >&2 "Complete! Mautic has been successfully copied to $(pwd)"
 fi
 
-#INSTALL COMPOSER REQUIREMENTS DYNAMICALLY
-if [ -n "$MAUTIC_COMPOSER" ]; then
-        echo >&2 "Mautic composer requirements requested: $MAUTIC_COMPOSER"
+#INSTALL PLUGINS & COMPOSER REQUIREMENTS DYNAMICALLY
+if [ -n "$MAUTIC_PLUGINS" ]; then
+        echo >&2 "Mautic composer requirements and plugins requested: $MAUTIC_PLUGINS"
 
-        for plugin in $MAUTIC_COMPOSER ; do
+        for plugin in $MAUTIC_PLUGINS; do
                 echo "Adding requirements for $plugin..."
                 composer require $plugin \
                         --prefer-dist --prefer-stable --no-update \
@@ -123,27 +123,11 @@ if [ -n "$MAUTIC_COMPOSER" ]; then
                 --prefer-dist --no-dev \
                 --no-interaction --optimize-autoloader;
 
-        echo >&2 "Updating Mautic plugins and vendors permissions..."
-        chown www-data:www-data plugins/* vendor/*
-fi
-
-#INSTALL PLUGINS DYNAMICALLY
-if [ -n "$MAUTIC_PLUGINS" ]; then
         echo >&2 "Clear Mautic cache..."
-        php app/console app:clear
+        php app/console cache:clear --env=prod --no-interaction
 
-        echo >&2 "Reload Mautic plugins..."
-        php app/console mautic:plugins:reload
-
-        echo >&2 "Mautic plugins requested: $MAUTIC_PLUGINS"
-
-        for plugin in $MAUTIC_PLUGINS ; do
-                echo "Install $plugin..."
-                php app/console mautic:plugins:install $plugin
-        done
-
-        echo >&2 "Clear Mautic cache again..."
-        php app/console cache:clear
+        echo >&2 "Updating Mautic directory permissions..."
+        chown -R www-data:www-data plugins/* vendor/* app/cache/*
 fi
 
 # Ensure the MySQL Database is created
