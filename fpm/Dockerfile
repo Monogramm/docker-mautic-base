@@ -52,7 +52,7 @@ VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
 ENV MAUTIC_VERSION=2.15.2 \
-    MAUTIC_SHA1=d205cbd6783332a212c5ae92d73c77178c2d2f28 \
+    MAUTIC_SHA1=4452818b3a806b7eaac9fe507717564229da5fef \
     MAUTIC_SRC_SHA1=403e2020efd7c89668a95a5c8d4cbfb2c5ed0399 \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
