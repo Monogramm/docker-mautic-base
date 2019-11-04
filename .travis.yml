@@ -28,6 +28,13 @@ script:
 notifications:
   email: false
 
+matrix:
+  allow_failures:
+    - env: VARIANT=beta-fpm
+    - env: VARIANT=beta-apache
+
 env: # Environments
     - VARIANT=fpm
     - VARIANT=apache
+    - VARIANT=beta-fpm
+    - VARIANT=beta-apache
