@@ -85,6 +85,7 @@ RUN set -ex; \
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY makeconfig.php makedb.php /
 COPY mautic.crontab /etc/cron.d/mautic
+RUN chmod 644 /etc/cron.d/mautic
 
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite
