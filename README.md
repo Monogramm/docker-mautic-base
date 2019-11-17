@@ -19,16 +19,6 @@ If you want to pull the latest stable image from DockerHub:
 
     docker pull mautic/mautic:latest
 
-There are also another images that fit your needs:
-
-| Tag | PHP | Web Server | Compatibility |
-|-----|:-----:|:------------:|:---------------:|
-| latest | 7.1.23 | Apache | <= 2.15.1 |
-| apache | 7.1.23 | Apache | <= 2.15.1 |
-| fpm | 7.1.23 | Nginx | <= 2.15.1 |
-| beta-apache | 7.2.12 | Apache | >= 2.15.1 |
-| beta-fpm | 7.2.12 | Nginx | >= 2.15.1 |
-
 **You can use the beta images to test latest beta releases of Mautic with current PHP version.**
 
 # Running Basic Container
@@ -127,42 +117,44 @@ Access your new Mautic on `http://localhost:8080` or `http://host-ip:8080` in a 
 ## ... via [`docker-compose`](https://github.com/docker/compose)
 
 Example `docker-compose.yml` for `mautic`:
-```yml
-version: "2"
+
+```yaml
+version: '3.7'
 
 services:
   mautic:
     image: mautic/mautic:latest
-    container_name: mautic
-    depends_on:
-      - mauticdb
+    links:
+      - mauticdb:mysql
     ports:
       - 8080:80
     volumes:
-      - mautic_data:/var/www/html
+      - ./mautic_data:/var/www/html
     environment:
       - MAUTIC_DB_HOST=mauticdb
+      - MYSQL_PORT_3306_TCP=3306
       - MAUTIC_DB_USER=root
-      - MAUTIC_DB_PASSWORD=mysqlrootpassword
-	    - MAUTIC_DB_NAME=mautic
+      - MAUTIC_DB_PASSWORD=mysecret
+      - MAUTIC_DB_NAME=mautic
+    networks:
+      - mautic-net
 
   mauticdb:
     image: mysql:5.6
-    container_name: mauticdb
-    ports:
-      - 3306:3306
-    volumes:
-      - mautic_db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=mysqlrootpassword
+      - MYSQL_ROOT_PASSWORD=mysecret
+    networks:
+      - mautic-net
 
-volumes:
-  - mautic_data:
-  - mautic_db:
-
+networks:
+  mautic-net:
+    driver: bridge
 ```
 
 Run `docker-compose up`, wait for it to initialize completely, and visit `http://localhost:8080` or `http://host-ip:8080`.
+
+> This compose file was tested on compose file version 3.0+ (docker engine 1.13.0+), see the relation of compose file and docker engine [here](https://docs.docker.com/compose/compose-file/compose-versioning/).
+
 
 # Supported Docker versions
 
