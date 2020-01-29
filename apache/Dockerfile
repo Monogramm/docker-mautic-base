@@ -11,6 +11,9 @@ RUN set -ex; \
         wget \
         sudo \
         libc-client-dev \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
         libicu-dev \
         libkrb5-dev \
         libmcrypt-dev \
@@ -23,6 +26,7 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*; \
     rm /etc/cron.daily/*; \
     docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos; \
+    docker-php-ext-configure gd --with-freetype --with-jpeg; \
     docker-php-ext-configure opcache --enable-opcache; \
     docker-php-ext-install \
         imap \
