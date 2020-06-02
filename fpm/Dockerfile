@@ -55,9 +55,9 @@ RUN set -ex; \
 VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
-ENV MAUTIC_VERSION=2.15.3 \
-    MAUTIC_SHA1=d6ec21376ceacd8bbb8d9ee58e81d8050a79c0b8 \
-    MAUTIC_SRC_SHA1=e9d64733c55122a454ebe402ccb00d599b72b341 \
+ENV MAUTIC_VERSION=2.16.0 \
+    MAUTIC_SHA1=94ced007fd99e63eaeec435012784b6bbe834b84 \
+    MAUTIC_SRC_SHA1=3e520e0bcf0cacf633266861303f9e13694ecab9 \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
     MAUTIC_DB_NAME=mautic \
@@ -90,6 +90,7 @@ COPY docker-entrypoint.sh /entrypoint.sh
 COPY makeconfig.php makedb.php /
 COPY mautic.crontab /etc/cron.d/mautic
 RUN chmod 644 /etc/cron.d/mautic
+
 
 # Apply necessary permissions
 RUN ["chmod", "+x", "/entrypoint.sh"]
