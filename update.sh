@@ -31,12 +31,12 @@ current=$( curl -fsSL 'https://api.github.com/repos/mautic/mautic/tags' |tac|tac
 	head -n 1 )
 
 # TODO - Expose SHA signatures for the packages somewhere
-echo "get current SHA signature"
-curl -o mautic.zip -SL https://github.com/mautic/mautic/releases/download/$current/$current.zip
+echo "get $current SHA signature"
+curl -o mautic.zip -SL "https://github.com/mautic/mautic/releases/download/$current/$current.zip"
 sha1="$(sha1sum mautic.zip | sed -r 's/ .*//')"
 
 echo "get $current src SHA signature"
-curl -o mautic-src.zip -SL https://github.com/mautic/mautic/archive/$current.zip
+curl -o mautic-src.zip -SL "https://github.com/mautic/mautic/archive/$current.zip"
 srcsha1="$(sha1sum mautic-src.zip | sed -r 's/ .*//')"
 
 echo "remove mautic-src.zip"

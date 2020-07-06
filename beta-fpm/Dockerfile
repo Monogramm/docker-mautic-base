@@ -1,71 +1,91 @@
-FROM php:7.2-fpm
+FROM php:7.1-fpm
 
 LABEL vendor="Mautic"
 LABEL maintainer="Luiz Eduardo Oliveira Fonseca <luiz@powertic.com>"
 
 # Install PHP extensions
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    cron \
-    git \
-    wget \
-    sudo \
-    libc-client-dev \
-    libicu-dev \
-    libkrb5-dev \
-    libssl-dev \
-    libz-dev \
-    unzip \
-    zip \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm /etc/cron.daily/*
-
-RUN docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos \
-    && docker-php-ext-configure opcache --enable-opcache \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install imap intl mbstring mysqli pdo_mysql zip opcache bcmath gd \
-    && docker-php-ext-enable imap intl mbstring mysqli pdo_mysql zip opcache bcmath gd
-
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+RUN set -ex; \
+    apt-get update && apt-get install --no-install-recommends -y \
+        cron \
+        git \
+        wget \
+        sudo \
+        libc-client-dev \
+        libicu-dev \
+        libkrb5-dev \
+        libmcrypt-dev \
+        libssl-dev \
+        libz-dev \
+        unzip \
+        zip \
+    ; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*; \
+    rm /etc/cron.daily/*; \
+    docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos; \
+    docker-php-ext-configure opcache --enable-opcache; \
+    docker-php-ext-install \
+        imap \
+        intl \
+        mbstring \
+        mcrypt \
+        mysqli \
+        pdo_mysql \
+        zip \
+        opcache \
+        bcmath \
+    ; \
+    docker-php-ext-enable \
+        imap \
+        intl \
+        mbstring \
+        mcrypt \
+        mysqli \
+        pdo_mysql \
+        zip \
+        opcache \
+        bcmath \
+    ;
 
 # Define Mautic volume to persist data
 VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
-ENV MAUTIC_VERSION 2.16.0
-ENV MAUTIC_SHA1 94ced007fd99e63eaeec435012784b6bbe834b84
-
-# By default enable cron jobs
-ENV MAUTIC_RUN_CRON_JOBS true
-
-# Setting an root user for test
-ENV MAUTIC_DB_USER root
-ENV MAUTIC_DB_NAME mautic
-
-# Setting PHP properties
-ENV PHP_INI_DATE_TIMEZONE='UTC' \
+ENV MAUTIC_VERSION=3.0.1 \
+    MAUTIC_SHA1=f0778e47ded0e3611607fce2b69989b8b9449551 \
+    MAUTIC_SRC_SHA1=f783f4116e6369b7c49be7627c5c2754af254605 \
+    MAUTIC_RUN_CRON_JOBS=true \
+    MAUTIC_DB_USER=root \
+    MAUTIC_DB_NAME=mautic \
+    PHP_INI_DATE_TIMEZONE='UTC' \
     PHP_MEMORY_LIMIT=512M \
     PHP_MAX_UPLOAD=128M \
     PHP_MAX_EXECUTION_TIME=300
 
+# Install composer and download sources
+RUN set -ex; \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer; \
+    curl -o mautic-src.zip -SL https://github.com/mautic/mautic/archive/${MAUTIC_VERSION}.zip; \
+    echo "$MAUTIC_SRC_SHA1 *mautic-src.zip" | sha1sum -c -; \
+    mkdir -p /usr/src/mautic-src; \
+    unzip mautic-src.zip -d /usr/src/mautic-src; \
+    rm mautic-src.zip; \
+    chown -R www-data:www-data /usr/src/mautic-src;
+
 # Download package and extract to web volume
-RUN curl -o mautic.zip -SL https://github.com/mautic/mautic/releases/download/${MAUTIC_VERSION}/${MAUTIC_VERSION}.zip \
-    && echo "$MAUTIC_SHA1 *mautic.zip" | sha1sum -c - \
-    && mkdir /usr/src/mautic \
-    && unzip mautic.zip -d /usr/src/mautic \
-    && rm mautic.zip \
-    && chown -R www-data:www-data /usr/src/mautic
+RUN set -ex; \
+    curl -o mautic.zip -SL https://github.com/mautic/mautic/releases/download/${MAUTIC_VERSION}/${MAUTIC_VERSION}.zip; \
+    echo "$MAUTIC_SHA1 *mautic.zip" | sha1sum -c -; \
+    mkdir /usr/src/mautic; \
+    unzip mautic.zip -d /usr/src/mautic; \
+    rm mautic.zip; \
+    chown -R www-data:www-data /usr/src/mautic;
 
 # Copy init scripts and custom .htaccess
 COPY docker-entrypoint.sh /entrypoint.sh
-COPY makeconfig.php /makeconfig.php
-COPY makedb.php /makedb.php
+COPY makeconfig.php makedb.php /
 COPY mautic.crontab /etc/cron.d/mautic
-RUN chmod 644 /etc/cron.d/mautic
+
 
 # Apply necessary permissions
 RUN ["chmod", "+x", "/entrypoint.sh"]

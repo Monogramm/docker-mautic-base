@@ -11,9 +11,6 @@ RUN set -ex; \
         wget \
         sudo \
         libc-client-dev \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev \
         libicu-dev \
         libkrb5-dev \
         libmcrypt-dev \
@@ -26,7 +23,6 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*; \
     rm /etc/cron.daily/*; \
     docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos; \
-    docker-php-ext-configure gd --with-freetype --with-jpeg; \
     docker-php-ext-configure opcache --enable-opcache; \
     docker-php-ext-install \
         imap \
@@ -55,9 +51,9 @@ RUN set -ex; \
 VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
-ENV MAUTIC_VERSION=2.16.0 \
-    MAUTIC_SHA1=94ced007fd99e63eaeec435012784b6bbe834b84 \
-    MAUTIC_SRC_SHA1=3e520e0bcf0cacf633266861303f9e13694ecab9 \
+ENV MAUTIC_VERSION=2.16.3 \
+    MAUTIC_SHA1=242a1a62156884e58ba42a9c0d5ff8d0ca63e720 \
+    MAUTIC_SRC_SHA1=34e3847cf82f10aa81c864a2c07b4267925f3a54 \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
     MAUTIC_DB_NAME=mautic \
@@ -89,7 +85,6 @@ RUN set -ex; \
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY makeconfig.php makedb.php /
 COPY mautic.crontab /etc/cron.d/mautic
-RUN chmod 644 /etc/cron.d/mautic
 
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite
