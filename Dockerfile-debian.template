@@ -1,34 +1,59 @@
-FROM php:7.1-%%VARIANT%%
+FROM php:7.3-%%VARIANT%%
 
 LABEL vendor="Mautic"
+
 LABEL maintainer="Luiz Eduardo Oliveira Fonseca <luiz@powertic.com>"
 
 # Install PHP extensions
 RUN set -ex; \
     apt-get update && apt-get install --no-install-recommends -y \
+        ca-certificates \
+        build-essential  \
+        software-properties-common \
         cron \
         git \
+        htop \
         wget \
+        dos2unix \
+        curl \
+        libcurl4-gnutls-dev \
         sudo \
         libc-client-dev \
-        libicu-dev \
         libkrb5-dev \
         libmcrypt-dev \
         libssl-dev \
+        libxml2-dev \
+        libzip-dev \
+        libjpeg-dev \
+        libmagickwand-dev \
+        libpng-dev \
+        libgif-dev \
+        libtiff-dev \
         libz-dev \
+        libpq-dev \
+        imagemagick \
+        graphicsmagick \
+        libwebp-dev \
+        libjpeg62-turbo-dev \
+        libxpm-dev \
+        libaprutil1-dev \
+        libicu-dev \
+        libfreetype6-dev \
         unzip \
         zip \
+        mariadb-client \
     ; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     rm -rf /var/lib/apt/lists/*; \
     rm /etc/cron.daily/*; \
     docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos; \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/lib --with-png-dir=/usr/lib --with-jpeg-dir=/usr/lib; \
+    docker-php-ext-install  gd; \
     docker-php-ext-configure opcache --enable-opcache; \
     docker-php-ext-install \
         imap \
         intl \
         mbstring \
-        mcrypt \
         mysqli \
         pdo_mysql \
         zip \
@@ -39,12 +64,12 @@ RUN set -ex; \
         imap \
         intl \
         mbstring \
-        mcrypt \
         mysqli \
         pdo_mysql \
         zip \
         opcache \
         bcmath \
+        gd \
     ;
 
 # Define Mautic volume to persist data
@@ -59,7 +84,7 @@ ENV MAUTIC_VERSION=%%VERSION%% \
     MAUTIC_DB_NAME=mautic \
     PHP_INI_DATE_TIMEZONE='UTC' \
     PHP_MEMORY_LIMIT=512M \
-    PHP_MAX_UPLOAD=128M \
+    PHP_MAX_UPLOAD=512M \
     PHP_MAX_EXECUTION_TIME=300
 
 # Install composer and download sources

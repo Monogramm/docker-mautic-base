@@ -5,7 +5,6 @@ LABEL vendor="Mautic"
 LABEL maintainer="Luiz Eduardo Oliveira Fonseca <luiz@powertic.com>"
 
 # Install PHP extensions
-# Install composer
 RUN set -ex; \
     apt-get update && apt-get install --no-install-recommends -y \
         ca-certificates \
@@ -41,7 +40,6 @@ RUN set -ex; \
         libicu-dev \
         libfreetype6-dev \
         unzip \
-        nano \
         zip \
         mariadb-client \
     ; \
@@ -53,6 +51,7 @@ RUN set -ex; \
     docker-php-ext-install  gd; \
     docker-php-ext-configure opcache --enable-opcache; \
     docker-php-ext-install \
+        imap \
         intl \
         mbstring \
         mysqli \
@@ -60,9 +59,9 @@ RUN set -ex; \
         zip \
         opcache \
         bcmath \
-        gd \
     ; \
     docker-php-ext-enable \
+        imap \
         intl \
         mbstring \
         mysqli \
@@ -79,7 +78,7 @@ VOLUME /var/www/html
 # Define Mautic version and expected SHA1 signature
 ENV MAUTIC_VERSION=3.0.2 \
     MAUTIC_SHA1=225dec8fbac05dfb77fdd7ed292a444797db215f \
-    MAUTIC_SRC_SHA1= \
+    MAUTIC_SRC_SHA1=1d69d215de4c8f7d385f68452789f16356827ff4 \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
     MAUTIC_DB_NAME=mautic \
