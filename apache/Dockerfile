@@ -1,65 +1,91 @@
 FROM php:7.3-apache
 
 LABEL vendor="Mautic"
+
 LABEL maintainer="Luiz Eduardo Oliveira Fonseca <luiz@powertic.com>"
 
 # Install PHP extensions
+# Install composer
 RUN set -ex; \
     apt-get update && apt-get install --no-install-recommends -y \
+        ca-certificates \
+        build-essential  \
+        software-properties-common \
         cron \
         git \
+        htop \
         wget \
+        dos2unix \
+        curl \
+        libcurl4-gnutls-dev \
         sudo \
         libc-client-dev \
-        libicu-dev \
         libkrb5-dev \
         libmcrypt-dev \
         libssl-dev \
+        libxml2-dev \
+        libzip-dev \
+        libjpeg-dev \
+        libmagickwand-dev \
+        libpng-dev \
+        libgif-dev \
+        libtiff-dev \
         libz-dev \
+        libpq-dev \
+        imagemagick \
+        graphicsmagick \
+        libwebp-dev \
+        libjpeg62-turbo-dev \
+        libxpm-dev \
+        libaprutil1-dev \
+        libicu-dev \
+        libfreetype6-dev \
         unzip \
+        nano \
         zip \
+        mariadb-client \
     ; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     rm -rf /var/lib/apt/lists/*; \
     rm /etc/cron.daily/*; \
     docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos; \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/lib --with-png-dir=/usr/lib --with-jpeg-dir=/usr/lib; \
+    docker-php-ext-install  gd; \
     docker-php-ext-configure opcache --enable-opcache; \
     docker-php-ext-install \
-        imap \
         intl \
         mbstring \
-        mcrypt \
         mysqli \
         pdo_mysql \
         zip \
         opcache \
         bcmath \
+        gd \
     ; \
     docker-php-ext-enable \
-        imap \
         intl \
         mbstring \
-        mcrypt \
         mysqli \
         pdo_mysql \
         zip \
         opcache \
         bcmath \
+        gd \
     ;
 
 # Define Mautic volume to persist data
 VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
-ENV MAUTIC_VERSION=2.16.3 \
-    MAUTIC_SHA1=242a1a62156884e58ba42a9c0d5ff8d0ca63e720 \
-    MAUTIC_SRC_SHA1=34e3847cf82f10aa81c864a2c07b4267925f3a54 \
+ENV MAUTIC_VERSION=3.0.2 \
+    MAUTIC_SHA1=225dec8fbac05dfb77fdd7ed292a444797db215f \
+    MAUTIC_SRC_SHA1= \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
     MAUTIC_DB_NAME=mautic \
     PHP_INI_DATE_TIMEZONE='UTC' \
     PHP_MEMORY_LIMIT=512M \
-    PHP_MAX_UPLOAD=128M \
+    PHP_MAX_UPLOAD=512M \
     PHP_MAX_EXECUTION_TIME=300
 
 # Install composer and download sources

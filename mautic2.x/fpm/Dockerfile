@@ -4,6 +4,7 @@ LABEL vendor="Mautic"
 LABEL maintainer="Luiz Eduardo Oliveira Fonseca <luiz@powertic.com>"
 
 # Install PHP extensions
+# Install composer
 RUN set -ex; \
     apt-get update && apt-get install --no-install-recommends -y \
         cron \
@@ -45,7 +46,8 @@ RUN set -ex; \
         zip \
         opcache \
         bcmath \
-    ;
+    ; \
+    curl -sS 'https://getcomposer.org/installer' | php -- --install-dir=/usr/bin --filename=composer
 
 # Define Mautic volume to persist data
 VOLUME /var/www/html
