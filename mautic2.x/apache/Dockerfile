@@ -7,18 +7,41 @@ LABEL maintainer="Luiz Eduardo Oliveira Fonseca <luiz@powertic.com>"
 # Install composer
 RUN set -ex; \
     apt-get update && apt-get install --no-install-recommends -y \
+        ca-certificates \
+        build-essential  \
+        software-properties-common \
         cron \
         git \
+        htop \
         wget \
+        dos2unix \
+        curl \
+        libcurl4-gnutls-dev \
         sudo \
         libc-client-dev \
-        libicu-dev \
         libkrb5-dev \
         libmcrypt-dev \
         libssl-dev \
+        libxml2-dev \
+        libzip-dev \
+        libjpeg-dev \
+        libmagickwand-dev \
+        libpng-dev \
+        libgif-dev \
+        libtiff-dev \
         libz-dev \
+        libpq-dev \
+        imagemagick \
+        graphicsmagick \
+        libwebp-dev \
+        libjpeg62-turbo-dev \
+        libxpm-dev \
+        libaprutil1-dev \
+        libicu-dev \
+        libfreetype6-dev \
         unzip \
         zip \
+        mariadb-client \
     ; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     rm -rf /var/lib/apt/lists/*; \
