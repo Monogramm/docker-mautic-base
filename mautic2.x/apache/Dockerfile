@@ -29,7 +29,6 @@ RUN set -ex; \
         imap \
         intl \
         mbstring \
-        mcrypt \
         mysqli \
         pdo_mysql \
         zip \
@@ -40,7 +39,6 @@ RUN set -ex; \
         imap \
         intl \
         mbstring \
-        mcrypt \
         mysqli \
         pdo_mysql \
         zip \
