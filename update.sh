@@ -39,6 +39,9 @@ echo "get $latest SHA signature"
 curl -o mautic.zip -SL "https://github.com/mautic/mautic/releases/download/$latest/$latest.zip"
 sha1="$(sha1sum mautic.zip | sed -r 's/ .*//')"
 
+echo "remove mautic.zip"
+rm mautic.zip
+
 echo "get $latest src SHA signature"
 curl -o mautic-src.zip -SL "https://github.com/mautic/mautic/archive/$latest.zip"
 srcsha1="$(sha1sum mautic-src.zip | sed -r 's/ .*//')"
@@ -90,6 +93,3 @@ done
 echo "update .travis.yml"
 travis="$(awk -v 'RS=\n\n' '$1 == "env:" && $2 == "#" && $3 == "Environments" { $0 = "env: # Environments'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
 echo "$travis" > .travis.yml
-
-echo "remove mautic.zip"
-rm mautic.zip
