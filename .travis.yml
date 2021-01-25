@@ -36,5 +36,3 @@ matrix:
 env: # Environments
     - VARIANT=fpm
     - VARIANT=apache
-    - VARIANT=beta-fpm
-    - VARIANT=beta-apache

@@ -76,9 +76,9 @@ RUN set -ex; \
 VOLUME /var/www/html
 
 # Define Mautic version and expected SHA1 signature
-ENV MAUTIC_VERSION=3.0.2 \
-    MAUTIC_SHA1=225dec8fbac05dfb77fdd7ed292a444797db215f \
-    MAUTIC_SRC_SHA1=1d69d215de4c8f7d385f68452789f16356827ff4 \
+ENV MAUTIC_VERSION=3.2.5 \
+    MAUTIC_SHA1=f57071c500fcedd2a64c0e7b94f0354cfa54d0aa \
+    MAUTIC_SRC_SHA1=c5eb5b782cba4b654d4456ddedbb9f4da8b60fbf \
     MAUTIC_RUN_CRON_JOBS=true \
     MAUTIC_DB_USER=root \
     MAUTIC_DB_NAME=mautic \
