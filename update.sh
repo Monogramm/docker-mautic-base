@@ -56,7 +56,7 @@ for variant in "${variants[@]}"; do
 	echo "generating $latest-$variant"
 
 	template="Dockerfile-${base[$variant]}.template"
-	cp $template "$dir/Dockerfile"
+	cp "$template" "$dir/Dockerfile"
 
 	# To make management easier, we use these files for all variants
 	cp -r common/* "$dir/"
