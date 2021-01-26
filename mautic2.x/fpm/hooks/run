@@ -16,7 +16,7 @@ COMMIT_MSG=$(git log -1 --format=%s)
 
 export DOCKER_REPO=monogramm/docker-mautic-base
 export DOCKERFILE_PATH=Dockerfile
-export DOCKER_TAG=3-apache
+export DOCKER_TAG=2-fpm
 export IMAGE_NAME=${DOCKER_REPO}:${DOCKER_TAG}
 
 # Execute hooks in following order
