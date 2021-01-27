@@ -69,8 +69,10 @@ RUN set -ex; \
         zip \
         opcache \
         bcmath \
+        gd \
     ; \
-    curl -sS 'https://getcomposer.org/installer' | php -- --install-dir=/usr/bin --filename=composer
+    curl -sS 'https://getcomposer.org/installer' | php -- --install-dir=/usr/bin --filename=composer --version=1.10.19; \
+    composer --version
 
 # Define Mautic volume to persist data
 VOLUME /var/www/html
@@ -87,9 +89,8 @@ ENV MAUTIC_VERSION=2.16.2 \
     PHP_MAX_UPLOAD=128M \
     PHP_MAX_EXECUTION_TIME=300
 
-# Install composer and download sources
+# Install download sources
 RUN set -ex; \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer; \
     curl -o mautic-src.zip -SL https://github.com/mautic/mautic/archive/${MAUTIC_VERSION}.zip; \
     echo "$MAUTIC_SRC_SHA1 *mautic-src.zip" | sha1sum -c -; \
     mkdir -p /usr/src/mautic-src; \
