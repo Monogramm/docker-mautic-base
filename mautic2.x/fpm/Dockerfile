@@ -46,6 +46,8 @@ RUN set -ex; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     rm -rf /var/lib/apt/lists/*; \
     rm /etc/cron.daily/*; \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/lib --with-png-dir=/usr/lib --with-jpeg-dir=/usr/lib; \
+    docker-php-ext-install gd; \
     docker-php-ext-configure opcache --enable-opcache; \
     docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos; \
     docker-php-ext-install \
