@@ -124,7 +124,7 @@ if [ -n "$MAUTIC_PLUGINS" ]; then
                 --no-interaction --optimize-autoloader;
 
         echo >&2 "Clear Mautic cache..."
-        php app/console cache:clear --env=prod --no-interaction
+        php bin/console cache:clear --env=prod --no-interaction
 
         echo >&2 "Updating Mautic directory permissions..."
         chown -R www-data:www-data plugins/* vendor/* app/cache/*
