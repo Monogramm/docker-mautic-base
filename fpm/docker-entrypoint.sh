@@ -2,7 +2,7 @@
 set -e
 
 if [ ! -f /usr/local/etc/php/php.ini ]; then
-cat <<EOF > /usr/local/etc/php/php.ini
+        cat <<EOF > /usr/local/etc/php/php.ini
 date.timezone = "${PHP_INI_DATE_TIMEZONE}"
 always_populate_raw_post_data = -1
 memory_limit = ${PHP_MEMORY_LIMIT}
@@ -144,6 +144,7 @@ echo >&2 "Database Password: $MAUTIC_DB_PASSWORD"
 
 # Write the database connection to the config so the installer prefills it
 if ! [ -e app/config/local.php ]; then
+        mkdir -p /var/www/html/app/config
         php /makeconfig.php
 
         # Make sure our web user owns the config file if it exists

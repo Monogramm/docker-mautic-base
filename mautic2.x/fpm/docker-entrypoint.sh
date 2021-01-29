@@ -86,7 +86,7 @@ if [ -n "$MAUTIC_CRON_DYNAMICS" ]; then
         echo "10,40 * * * *     www-data   php /var/www/html/app/console mautic:integration:fetchleads -i Dynamics > /var/log/cron.pipe 2>&1" >> /etc/cron.d/mautic
 fi
 
-if ! [ -e index.php -a -e app/AppKernel.php ]; then
+if ! [ -e index.php ] && [ -e app/AppKernel.php ]; then
         echo >&2 "Mautic not found in $(pwd) - copying now..."
 
         if [ "$(ls -A)" ]; then
@@ -96,7 +96,39 @@ if ! [ -e index.php -a -e app/AppKernel.php ]; then
 
         tar cf - --one-file-system -C /usr/src/mautic . | tar xf -
 
+        echo >&2 "Copying Mautic composer config now..."
+        cp "/usr/src/mautic-src/mautic-$MAUTIC_VERSION/composer.json" .
+        cp "/usr/src/mautic-src/mautic-$MAUTIC_VERSION/composer.lock" .
+
         echo >&2 "Complete! Mautic has been successfully copied to $(pwd)"
+fi
+
+#INSTALL PLUGINS & COMPOSER REQUIREMENTS DYNAMICALLY
+if [ -n "$MAUTIC_PLUGINS" ]; then
+        echo >&2 "Mautic composer requirements and plugins requested: $MAUTIC_PLUGINS"
+
+        for plugin in $MAUTIC_PLUGINS; do
+                echo "Adding requirements for $plugin..."
+                composer require "$plugin" \
+                        --prefer-dist --prefer-stable --no-update \
+                        --no-interaction --optimize-autoloader;
+        done
+
+        echo >&2 "Update Mautic requirements..."
+        composer update \
+                --prefer-dist --no-dev \
+                --no-interaction --optimize-autoloader;
+
+        echo >&2 "Installing Mautic requirements..."
+        composer install \
+                --prefer-dist --no-dev \
+                --no-interaction --optimize-autoloader;
+
+        echo >&2 "Clear Mautic cache..."
+        php app/console cache:clear --env=prod --no-interaction
+
+        echo >&2 "Updating Mautic directory permissions..."
+        chown -R www-data:www-data plugins/* vendor/* app/cache/*
 fi
 
 # Ensure the MySQL Database is created
@@ -113,6 +145,7 @@ echo >&2 "Database Password: $MAUTIC_DB_PASSWORD"
 
 # Write the database connection to the config so the installer prefills it
 if ! [ -e app/config/local.php ]; then
+        mkdir -p /var/www/html/app/config
         php /makeconfig.php
 
         # Make sure our web user owns the config file if it exists
