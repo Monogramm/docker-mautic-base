@@ -2,7 +2,7 @@
 set -e
 
 if [ ! -f /usr/local/etc/php/php.ini ]; then
-	cat <<EOF > /usr/local/etc/php/php.ini
+        cat <<EOF > /usr/local/etc/php/php.ini
 date.timezone = "${PHP_INI_DATE_TIMEZONE}"
 always_populate_raw_post_data = -1
 memory_limit = ${PHP_MEMORY_LIMIT}
@@ -26,7 +26,6 @@ if [ -n "$MYSQL_PORT_3306_TCP" ]; then
                 echo >&2 "  instead of the linked mysql container"
         fi
 fi
-
 
 
 if [ -z "$MAUTIC_DB_HOST" ]; then
@@ -114,6 +113,8 @@ if [ -n "$MAUTIC_PLUGINS" ]; then
                         --no-interaction --optimize-autoloader;
         done
 
+        echo >&2 "Clear Mautic requirements..."
+        rm -rf ./vendor
         echo >&2 "Update Mautic requirements..."
         composer update \
                 --prefer-dist --no-dev \
